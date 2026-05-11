@@ -28,7 +28,7 @@ import http from '../services/http'
 
 const route = useRoute()
 const router = useRouter()
-const form = reactive({ title: '', content: '', category: '', tags: '', draft: false })
+const form = reactive({ title: '', content: '', category: '后端', tags: '默认', draft: false })
 const isEdit = computed(() => !!route.params.id)
 
 async function load() {
@@ -39,6 +39,14 @@ async function load() {
 
 async function submit() {
   try {
+    if (!form.title.trim() || !form.content.trim()) {
+      ElMessage.warning('标题和内容不能为空')
+      return
+    }
+    if (!form.category.trim() || !form.tags.trim()) {
+      ElMessage.warning('分类和标签不能为空')
+      return
+    }
     if (isEdit.value) await http.put(`/articles/${route.params.id}`, form)
     else await http.post('/articles', form)
     ElMessage.success('保存成功')
