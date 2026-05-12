@@ -52,7 +52,13 @@ async function submit() {
     ElMessage.success('保存成功')
     router.push('/me')
   } catch (e) {
-    ElMessage.error(e?.response?.data?.message || '保存失败')
+    const status = e?.response?.status
+    if (status === 401 || status === 403) {
+      ElMessage.error('登录状态已失效，请重新登录后再发布')
+      router.push('/login')
+      return
+    }
+    ElMessage.error(e?.response?.data?.message || e?.message || '保存失败')
   }
 }
 
